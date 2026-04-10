@@ -6,6 +6,7 @@ import {
   Post,
   Body,
   Put,
+  NotFoundException,
 } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { CreateProductDTO } from './dtos/create-product.dto';
@@ -25,11 +26,15 @@ export class ProductsController {
 
   @Get('/:id')
   getById(@Param('id', new ParseUUIDPipe()) id: string) {
+    const prod = this.productsService.getById(id);
+    if (!prod) throw new NotFoundException('Product not found...');
     return this.productsService.getById(id);
   }
 
   @Delete('/:id')
   deleteById(@Param('id', new ParseUUIDPipe()) id: string) {
+    if (!this.productsService.getById(id))
+      throw new NotFoundException('Product not found...');
     this.productsService.deleteById(id);
     return { success: true };
   }
@@ -44,6 +49,8 @@ export class ProductsController {
     @Param('id', new ParseUUIDPipe()) id: string,
     @Body() productData: UpdateProductDTO,
   ) {
+    if (!this.productsService.getById(id))
+      throw new NotFoundException('Product not found...');
     this.productsService.updateById(id, productData);
     return { success: true };
   }
