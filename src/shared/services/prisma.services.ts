@@ -1,9 +1,19 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
-import { PrismaClient } from 'prisma/generated-client';
+import { PrismaClient } from '../../prisma-client/index.js';
 
-//Initiate connection with database
 @Injectable()
 export class PrismaService extends PrismaClient implements OnModuleInit {
+  // DODAJ TEN KONSTRUKTOR:
+  constructor() {
+    super({
+      datasources: {
+        db: {
+          url: process.env.DATABASE_URL,
+        },
+      },
+    });
+  }
+
   async onModuleInit() {
     await this.$connect();
   }

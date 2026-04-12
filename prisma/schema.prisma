@@ -3,7 +3,7 @@
 
 generator client {
   provider = "prisma-client-js"
-  output   = "./generated-client"
+  output   = "../src/prisma-client"
 }
 
 datasource db {
@@ -19,11 +19,13 @@ model Product {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  orders Order[]
 }
 
 model Order {
   id String @id @default(uuid())
-  productId String
+  product Product? @relation(fields: [productId], references: [id], onDelete: SetNull)
+  productId String?
   client String
   address String
 

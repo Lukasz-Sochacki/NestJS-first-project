@@ -27,6 +27,8 @@
     "class-transformer": "^0.5.1",
     "class-validator": "^0.13.2",
     "cors": "^2.8.6",
+    "dotenv": "^17.4.1",
+    "prisma-client-26995ac2956777e983b75ab62b9f5626790dcfec2eb03f67221f295cf164f597": "file:custom-client",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.2.0"
   },
@@ -73,5 +75,8 @@
     ],
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"
+  },
+  "prisma": {
+    "seed": "ts-node prisma/seed.ts"
   }
 }
