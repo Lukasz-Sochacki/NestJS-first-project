@@ -1,4 +1,4 @@
-import { PrismaClient } from '../src/prisma-client';
+import { PrismaClient } from '@prisma/client';
 const db = new PrismaClient();
 
 function getProducts() {
@@ -36,24 +36,41 @@ function getProducts() {
   ];
 }
 
+function getClients() {
+  return [
+    {
+      id: '123456',
+      name: 'John Doe',
+      address: 'Warsaw',
+    },
+    {
+      id: '12345678',
+      name: 'Amanda Doe',
+      address: 'Cracow',
+    },
+    {
+      id: '12345678910',
+      name: 'Volodymir Doe',
+      address: 'Poznan',
+    },
+  ];
+}
+
 function getOrders() {
   return [
     {
       id: 'fd105551-0f0d-4a9f-bc41-c559c8a17260',
-      client: 'John Doe',
-      address: '123 Main Street, London',
+      clientId: '123456',
       productId: 'fd105551-0f0d-4a9f-bc41-c559c8a17256',
     },
     {
       id: 'fd105551-0f0d-4a9f-bc41-c559c8a17261',
-      client: 'Jane Doe',
-      address: '123 Main Street, London',
+      clientId: '12345678',
       productId: 'fd105551-0f0d-4a9f-bc41-c559c8a17256',
     },
     {
       id: 'fd105551-0f0d-4a9f-bc41-c559c8a17262',
-      client: 'Thomas Jefferson',
-      address: 'Baker Street 12B, New York',
+      clientId: '12345678910',
       productId: '01c7599d-318b-4b9f-baf7-51f3a936a2d4',
     },
   ];
@@ -66,12 +83,18 @@ async function seed() {
     }),
   );
   await Promise.all(
-    getOrders().map(({ productId, ...orderData }) => {
+    getClients().map((client) => db.client.create({ data: client })),
+  );
+  await Promise.all(
+    getOrders().map(({ productId, clientId, id }) => {
       return db.order.create({
         data: {
-          ...orderData,
+          id,
           product: {
             connect: { id: productId },
+          },
+          client: {
+            connect: { id: clientId },
           },
         },
       });
